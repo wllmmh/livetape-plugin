@@ -9,7 +9,7 @@
     {
       "name": "livetape",
       "source": "./",
-      "description": "An assistant that knows LiveTape and can write trading strategies to test and run."
+      "description": "An assistant that knows LiveTape and can write algorthmic trading strategies for the markets."
     }
   ]
 }
