@@ -13,6 +13,8 @@ client that loads skills.
 ```
 plugin.json          plugin manifest
 mcp.json             MCP servers (none yet; see below)
+.claude-plugin/
+└── marketplace.json Claude Code marketplace listing this plugin
 skills/
 └── livetape/
     ├── SKILL.md     how LiveTape works, and how to write a strategy
@@ -22,8 +24,21 @@ skills/
 
 ## Install
 
-Add this repository as a plugin in a client that supports Agent Plugins, or copy
-`skills/livetape` into your client's skills folder.
+In Claude Code (this repository is also a plugin marketplace):
+
+```
+/plugin install livetape --marketplace wllmmh/livetape-plugin
+```
+
+On Claude Code before 2.1.275, add the marketplace first:
+
+```
+/plugin marketplace add wllmmh/livetape-plugin
+/plugin install livetape@livetape
+```
+
+In other clients, add this repository as a plugin if the client supports Agent Plugins, or
+copy `skills/livetape` into its skills folder.
 
 ## Use
 
@@ -50,7 +65,9 @@ server, so an assistant can save strategies and start, pause and stop agents for
 - MCP servers go in `mcp.json` under `mcpServers`: a hosted server as
   `{ "type": "streamable-http", "url": "https://…" }` (never with an API key in `headers`), a
   local one as `{ "type": "stdio", "command": "./bin/…" }`.
-- Bump `version` in `plugin.json` with every release.
+- Bump `version` in `plugin.json` with every release. The plugin entry in
+  `.claude-plugin/marketplace.json` repeats `plugin.json`'s fields for Claude Code, so change
+  both together.
 
 ## Documentation
 

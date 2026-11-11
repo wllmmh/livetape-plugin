@@ -1,0 +1,24 @@
+{
+  "name": "livetape",
+  "description": "The LiveTape plugin: an assistant that knows LiveTape and writes strategies you can import.",
+  "owner": {
+    "name": "LiveTape",
+    "url": "https://livetape.ai"
+  },
+  "plugins": [
+    {
+      "name": "livetape",
+      "source": "./",
+      "description": "Answer questions about LiveTape and write trading strategies to import into it. MCP tools for managing agents and strategies will follow.",
+      "version": "0.1.0",
+      "author": {
+        "name": "LiveTape",
+        "url": "https://livetape.ai"
+      },
+      "homepage": "https://livetape.ai/docs",
+      "repository": "https://github.com/wllmmh/livetape-plugin",
+      "license": "Apache-2.0",
+      "keywords": ["trading", "algorithmic-trading", "strategies", "prediction-markets", "livetape"]
+    }
+  ]
+}
