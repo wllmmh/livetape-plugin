@@ -14,7 +14,9 @@ client that loads skills.
 plugin.json          plugin manifest
 mcp.json             MCP servers (coming soon; see below)
 .claude-plugin/
-└── marketplace.json Claude Code marketplace listing this plugin
+├── plugin.json      the same manifest for Claude Code, which reads only this one
+├── marketplace.json Claude Code marketplace listing this plugin
+└── icon.png
 skills/
 └── livetape/
     ├── SKILL.md     how LiveTape works, and how to write a strategy
@@ -65,9 +67,8 @@ server, so an assistant can save strategies and start, pause and stop agents for
 - MCP servers go in `mcp.json` under `mcpServers`: a hosted server as
   `{ "type": "streamable-http", "url": "https://…" }` (never with an API key in `headers`), a
   local one as `{ "type": "stdio", "command": "./bin/…" }`.
-- Bump `version` in `plugin.json` with every release. The plugin entry in
-  `.claude-plugin/marketplace.json` repeats `plugin.json`'s fields for Claude Code, so change
-  both together.
+- Bump `version` in `plugin.json` with every release, and in `.claude-plugin/plugin.json`,
+  which repeats its fields for Claude Code.
 
 ## Documentation
 

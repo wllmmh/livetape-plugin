@@ -1,0 +1,15 @@
+{
+  "name": "livetape",
+  "version": "0.1.0",
+  "description": "Answer questions about LiveTape and write trading strategies to import into it.",
+  "author": {
+    "name": "LiveTape",
+    "url": "https://livetape.ai"
+  },
+  "homepage": "https://livetape.ai/docs",
+  "repository": "https://github.com/wllmmh/livetape-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["trading", "algorithmic-trading", "strategies", "prediction-markets", "livetape"],
+  "icon": "./.claude-plugin/icon.png",
+  "mcpServers": "./mcp.json"
+}
