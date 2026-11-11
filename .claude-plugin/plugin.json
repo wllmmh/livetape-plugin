@@ -6,10 +6,21 @@
     "name": "LiveTape",
     "url": "https://livetape.ai"
   },
-  "homepage": "https://livetape.ai/docs",
+  "homepage": "https://livetape.ai",
+  "documentationUrl": "https://livetape.ai/docs",
   "repository": "https://github.com/wllmmh/livetape-plugin",
   "license": "Apache-2.0",
-  "keywords": ["trading", "algorithmic-trading", "strategies", "prediction-markets", "livetape"],
+  "keywords": [
+    "trading",
+    "algorithmic-trading",
+    "crypto",
+    "stocks",
+    "strategies",
+    "prediction-markets",
+    "livetape"
+  ],
   "icon": "./.claude-plugin/icon.png",
+  "privacyPolicyUrl": "https://livetape.ai/privacy",
+  "termsOfServiceUrl": "https://livetape.ai/terms",
   "mcpServers": "./mcp.json"
 }
