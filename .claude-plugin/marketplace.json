@@ -9,7 +9,7 @@
     {
       "name": "livetape",
       "source": "./",
-      "description": "Answer questions about LiveTape and write trading strategies to import into it."
+      "description": "An assistant that knows LiveTape and can write trading strategies to test and run."
     }
   ]
 }
