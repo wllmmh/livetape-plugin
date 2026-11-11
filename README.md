@@ -12,7 +12,7 @@ client that loads skills.
 
 ```
 plugin.json          plugin manifest
-mcp.json             MCP servers (none yet; see below)
+mcp.json             MCP servers (coming soon; see below)
 .claude-plugin/
 └── marketplace.json Claude Code marketplace listing this plugin
 skills/

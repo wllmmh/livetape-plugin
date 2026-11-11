@@ -9,7 +9,7 @@
     {
       "name": "livetape",
       "source": "./",
-      "description": "Answer questions about LiveTape and write trading strategies to import into it. MCP tools for managing agents and strategies will follow.",
+      "description": "Answer questions about LiveTape and write trading strategies to import into it.",
       "version": "0.1.0",
       "author": {
         "name": "LiveTape",
