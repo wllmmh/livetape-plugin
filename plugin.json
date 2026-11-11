@@ -1,7 +1,7 @@
 {
   "name": "livetape",
   "version": "0.1.0",
-  "description": "An assistant that knows LiveTape and can write algorthmic trading strategies for the markets.",
+  "description": "An assistant that knows LiveTape and can write algorithmic trading strategies for the markets.",
   "author": {
     "name": "LiveTape",
     "url": "https://livetape.ai"
