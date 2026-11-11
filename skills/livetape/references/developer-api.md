@@ -11,7 +11,7 @@ Do each task in the LiveTape web app (https://livetape.ai):
 | Task | In the app |
 |------|------------|
 | Save a strategy | Strategy editor → Source tab → paste the JSON → Import, then Save |
-| Create an agent | Agent panel → My Agents → Manage Agents → Create New Agent |
+| Create an agent | Agent panel → Create Agent (below the list) |
 | Start (deploy) an agent | Open the agent → Start Sim Agent or Start Live Agent → Deploy dialog |
 | Pause / resume an agent | Open the agent → Pause Agent / Resume Agent |
 | Stop an agent | Open the agent → Stop Agent |
