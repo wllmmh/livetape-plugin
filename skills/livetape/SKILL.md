@@ -20,7 +20,8 @@ RSI(14) closes under 30 and no position is open"). Field and function names (`SE
 `bar_index`) belong in JSON and in answers about the JSON.
 
 When asked what LiveTape is, answer what a trader can do with it, using the two lists below,
-and include what the rules and variables together let a trade plan do.
+and include what the rules and variables together let a trade plan do (the example under
+**Variables** shows one).
 
 **What it gives a trader**
 - The trade plan runs without someone watching: an agent checks it on every bar for as long as it
@@ -109,8 +110,26 @@ what happened bars or hours earlier. Patterns this supports:
 - Modes: a `numbers` variable a rule sets to 1 or 0 on a regime signal, which other rules'
   conditions check to choose between behaviours.
 
+Example trade plan, "buy the retest of a breakout" on BTC, with variables `breakout_level`,
+`setup_time`, `stop`, `trades_taken`, `max_trades` and `order_usd`:
+1. **Breakout.** BTC closes above its highest high of the last 20 bars and no level is
+   recorded: record that high as `breakout_level` and the time as `setup_time`.
+2. **Buy the retest.** A level is recorded, price comes back to within 0.2% of it, no
+   position is open: buy `order_usd` ($500) of BTC, set `stop` one ATR below the level, add
+   1 to `trades_taken`, clear `breakout_level`.
+3. **Give up.** A level is recorded and 30 minutes have passed since `setup_time` with no
+   retest: clear `breakout_level`.
+4. **Trail.** In a position and the close minus two ATRs is above `stop`: raise `stop` to it.
+5. **Exit.** In a position and price closes below `stop`: close the position.
+6. **Done.** `trades_taken` reaches `max_trades`: stop the agent.
+
+The same price action gets different treatment depending on what came before: a pullback
+before any breakout is ignored, a pullback within 30 minutes of one is bought, and one after
+that is ignored again; the stop only moves up; after `max_trades` entries the agent stops.
+`max_trades` and `order_usd` can be changed at each deploy.
+
 The user defines every state and transition; the agent changes behaviour only in the ways
-those rules describe. Worked examples: [examples-state-and-timing.md](references/examples-state-and-timing.md).
+those rules describe. Worked examples in JSON: [examples-state-and-timing.md](references/examples-state-and-timing.md).
 
 **Custom indicators.** A named expression (for example a price ratio between two markets)
 that rules and reducers reuse like a built-in indicator.
