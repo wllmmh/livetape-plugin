@@ -1,17 +1,53 @@
 ---
 name: livetape
-description: LiveTape (livetape.ai), the no-code platform where trading strategies are rules and agents run them live. Use to answer questions about LiveTape (strategies, rules, conditions, actions, variables, agents, accounts, markets including Polymarket prediction markets, backtests, plans) and to write or fix strategy JSON a user imports into LiveTape.
+description: LiveTape (livetape.ai), the no-code platform where trading strategies are rules that read and write variables, and agents run them live. Use to answer questions about LiveTape (strategies, rules, conditions, actions, variables, agents, accounts, markets including Polymarket prediction markets, backtests, subscription plans) and to write or fix strategy JSON a user imports into LiveTape.
 metadata:
   docs: https://livetape.ai/docs
 ---
 
 # LiveTape
 
-LiveTape lets people build trading strategies without code and run them live. A **strategy**
-is a set of if/then rules; an **agent** is a running instance of a strategy, bound to an
-account and one or more markets. Users build strategies in a visual editor, test them with
-backtests, and deploy agents that trade around the clock on a sim (paper) account or a linked
-real-money account.
+LiveTape lets users automate a trade plan without code and run it live. A **strategy** is the trade plan: if/then rules plus **variables**, values the agent records and read back while running, such as the level a setup triggered at, the time of the last entry, or the number of trades taken today. What an agent does on a bar can depend on current market conditions and on
+what has already happened, in the ways the user defines. An **agent** is a running instance
+of a strategy, bound to an account and one or more markets. Users build strategies in a
+visual editor and/or with AI, test them with backtests, and deploy agents on a sim (paper) account or a linked real-money account.
+
+## How to explain LiveTape
+
+Speak in a trader's terms: the trade plan, setups, entries, exits, stops, targets, sizing,
+positions, fills, drawdown. Describe a rule by the trade it takes ("buys $100 of BTC when
+RSI(14) closes under 30 and no position is open"). Field and function names (`SET_VARIABLE`,
+`bar_index`) belong in JSON and in answers about the JSON.
+
+When asked what LiveTape is, answer what a trader can do with it, using the two lists below,
+and include what the rules and variables together let a trade plan do.
+
+**What it gives a trader**
+- The trade plan runs without someone watching: an agent checks it on every bar for as long as it
+  runs, on a sim account or a linked Coinbase account.
+- Trade plans with memory: multi-step setups, trailing stops, daily trade caps, cooldowns, and
+  modes that change which rules act (see **Variables**).
+- Trade management in the rules: stop losses, brackets, limit entries that expire, scaling
+  out by position size, exits after a set time or before the session closes.
+- Risk limits on the agent, outside the rules: max drawdown in dollars or percent and max
+  runtime; on a hit the agent stops and, if set, cancels its orders and closes positions.
+- One trade plan, many settings: the same strategy runs in several agents with different markets,
+  sizes and thresholds, set at deploy without editing the strategy.
+- Testing before money: backtests run the same rules; sim accounts start at $100,000.
+- Seeing why: the Input tab shows each condition's live values, so a user can see why a rule
+  did or did not fire; the Variables tab shows what the agent has recorded; the Output log
+  lists every trigger, order and fill.
+- Cross-market and event logic: a spread or ratio between markets used as an indicator;
+  Polymarket up/down markets traded against the price to beat and rolled to the next window.
+
+**What it does not do**
+- Only the functions and actions in the schema: no custom code, no outside data (news,
+  fundamentals, on-chain), and no machine learning at the moment.
+- At the moment real-money trading is Coinbase spot USD pairs only; every other market trades
+  on a sim account.
+- Bars run from 1 second to 1 hour and rules are checked about once a second, which rules out
+  latency-sensitive strategies.
+- Backtest fills are simulated; a backtest result is no promise of live results.
 
 ## Route the request
 
@@ -36,13 +72,13 @@ does nothing until an agent runs it, and one strategy can run in many agents.
 **Rule.** A label, one or more condition groups, and actions. The rule fires when every
 condition in any one group is true: AND within a group, OR across groups.
 
-**Condition.** `left operator right`, each side an expression: a number, price or volume, an
+**Condition.** `left operator right`, each side a value: a number, price or volume, an
 indicator (SMA, EMA, RSI, ATR, VWAP, Bollinger, MACD, Donchian, ADX, Stochastic, Parabolic
-SAR, Z-Score, OBV), a reducer over a window (Highest, Lowest, Sum, Mean, Median, Mode, Std
-Dev, Variance), arithmetic, a variable, a custom indicator, a time expression (seconds, minutes
-or bars since/until a time; market open/close time), an account reader (position size, average
-price, P/L, open orders, an order's stop or limit price), or a market reader (price to beat,
-market status, seconds since the last tick). Expressions read the last closed bar unless told
+SAR, Z-Score, OBV), a rolling-window statistic (Highest, Lowest, Sum, Mean, Median, Mode, Std
+Dev, Variance), arithmetic, a variable, a custom indicator, a time (seconds, minutes or bars
+since/until a time; market open/close time), an account value (position size, average price,
+P/L, open orders, an order's stop or limit price), or a market value (price to beat, market
+status, seconds since the last tick). Expressions read the last closed bar unless told
 otherwise (`[1]`; `[2]` is the bar before). Reading the still-forming bar (`[0]`) needs Pro.
 
 **Actions.** Send order (market, limit, stop, stop-limit; crypto sized in USD by default or in
@@ -51,16 +87,37 @@ clear variable, start agent (deploy another of the user's agents), stop agent (i
 another), set market (swap the market in an instrument slot, or roll a recurring prediction
 market to its next window).
 
-**Variables.** Named values a strategy remembers: `prices`, `times`, `numbers`. Rules read
-and write them. Their starting values can be overridden for each backtest and each deploy
-without editing the strategy.
+**Variables.** Named values a strategy remembers, in three types: `prices`, `times`,
+`numbers`. Conditions read them (`GET_VARIABLE`, or seconds/bars since a `times` variable);
+the Set Variable and Clear Variable actions write them. A value can be a literal or an
+expression evaluated when the action fires: the current price, an indicator, the engine time
+(`NOW`), a position's average price, arithmetic on another variable. Values persist from one
+evaluation to the next while the agent runs and pause with it, and start from their starting
+values each time the agent starts. Starting values can be overridden for each backtest and
+each deploy without editing the strategy. The agent's Variables tab shows each current value,
+the rule that last set it and when.
+
+Because one rule can record a value that another rule's condition reads, a trade plan can act on
+what happened bars or hours earlier. Patterns this supports:
+- A multi-step setup: rule A records a breakout level and the time, rule B enters only on a
+  pullback to that level, rule C clears the level if the pullback has not come within N
+  minutes.
+- A level that moves: one rule raises a stop variable whenever price closes above it plus
+  the trailing distance; the exit rule reads it.
+- Counters and limits: trades taken today, then a Stop Agent action after N.
+- Cooldowns: the entry time stamped with `NOW`, the next entry gated on seconds since it.
+- Modes: a `numbers` variable a rule sets to 1 or 0 on a regime signal, which other rules'
+  conditions check to choose between behaviours.
+
+The user defines every state and transition; the agent changes behaviour only in the ways
+those rules describe. Worked examples: [examples-state-and-timing.md](references/examples-state-and-timing.md).
 
 **Custom indicators.** A named expression (for example a price ratio between two markets)
 that rules and reducers reuse like a built-in indicator.
 
 **Evaluation.** A running agent checks every rule about once a second and on every bar close,
-so a rule that stays true fires again; guards (no open position, no pending order, a cooldown)
-prevent repeat orders. Backtests use the same evaluation logic.
+so a rule that stays true fires again; an entry rule includes a check (no open position, no
+pending order, a cooldown) so it enters once. Backtests use the same evaluation logic.
 
 **Markets.** Crypto (Coinbase, the default, and Kraken), US stocks and ETFs (NASDAQ, NYSE),
 CME futures, OANDA forex, Polymarket prediction markets (outcome shares priced 0–1 that pay $1
@@ -103,7 +160,7 @@ Perplexity / Grok" starts a chat that reads this plugin (https://github.com/wllm
 the user pastes the JSON it returns and presses Import, which replaces the open strategy's
 contents.
 
-**Plans.** Free, Starter, Pro and Max differ in markets, order types, sub-minute intervals,
+**Subscription plans.** Free, Starter, Pro and Max differ in markets, order types, sub-minute intervals,
 agent counts, runtime and backtest quotas. https://livetape.ai/pricing has the current table;
 don't quote prices from memory.
 
@@ -134,8 +191,9 @@ Link https://livetape.ai/docs#<id>: `overview`, `strategies`, `rules`, `conditio
    no order targets a `PolyBolt:` slot, and no root reads `bar_index` 0 unless the user asked
    for the open bar. Import reports anything else; fix what the user pastes back.
 6. **Deliver** the JSON in one ```json block with no comments and no `id` fields, then a few
-   lines: the assumptions you made, and how to import it (strategy editor → Source tab →
-   paste → Import → Save). When the user is fixing a strategy, explain what was wrong.
+   lines: the trade plan in a trader's terms (entry, exit, size, what it records and why),
+   the assumptions you made, and how to import it (strategy editor → Source tab → paste →
+   Import → Save). When the user is fixing a strategy, explain what was wrong.
 
 When the user pastes a strategy and asks what it does, read it against the schema and explain
-each rule in plain words: when it fires and what it does.
+each rule as the trade it takes: when it fires and what it does.

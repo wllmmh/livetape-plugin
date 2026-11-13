@@ -1,7 +1,7 @@
 # LiveTape plugin
 
 Teaches your AI assistant [LiveTape](https://livetape.ai), the no-code platform where trading
-strategies are if/then rules and agents run them live. With it, an assistant can answer
+strategies are if/then rules that read and write variables, and agents run them live. With it, an assistant can answer
 questions about LiveTape and write strategy JSON you import straight into the strategy editor.
 
 This is an [Agent Plugins 1.0.0](https://agent-plugins.org/specification) package. Its skill
