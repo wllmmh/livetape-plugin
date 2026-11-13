@@ -1,7 +1,6 @@
 ---
 name: livetape
 description: LiveTape (livetape.ai), the no-code platform where trading strategies are rules and agents run them live. Use to answer questions about LiveTape (strategies, rules, conditions, actions, variables, agents, accounts, markets including Polymarket prediction markets, backtests, plans) and to write or fix strategy JSON a user imports into LiveTape.
-compatibility: scripts/validate-strategy.mjs needs Node.js 18 or later.
 metadata:
   docs: https://livetape.ai/docs
 ---
@@ -130,9 +129,10 @@ Link https://livetape.ai/docs#<id>: `overview`, `strategies`, `rules`, `conditio
    - [examples-prediction-markets.md](references/examples-prediction-markets.md): Polymarket up/down, price to beat, rolling to the next window.
 4. **Compose** the rules. Every entry rule carries a guard against repeating; every position
    has an exit; sizes come from `numbers` variables so the user can change them at deploy.
-5. **Validate.** When you can run commands, save the JSON to a file and run
-   `node scripts/validate-strategy.mjs <file>` from this skill's directory. Fix every error;
-   fix each warning or tell the user why it stays.
+5. **Check** the JSON against the schema before delivering it: every function is in the index,
+   every symbol is `Exchange:TICKER`, every `GET_VARIABLE` and `GET_SERIES` name is declared,
+   no order targets a `PolyBolt:` slot, and no root reads `bar_index` 0 unless the user asked
+   for the open bar. Import reports anything else; fix what the user pastes back.
 6. **Deliver** the JSON in one ```json block with no comments and no `id` fields, then a few
    lines: the assumptions you made, and how to import it (strategy editor → Source tab →
    paste → Import → Save). When the user is fixing a strategy, explain what was wrong.

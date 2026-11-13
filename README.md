@@ -20,8 +20,7 @@ mcp.json             MCP servers (coming soon; see below)
 skills/
 └── livetape/
     ├── SKILL.md     how LiveTape works, and how to write a strategy
-    ├── references/  the strategy schema, worked examples, the planned developer API
-    └── scripts/     validate-strategy.mjs
+    └── references/  the strategy schema, worked examples, the planned developer API
 ```
 
 ## Install
@@ -48,12 +47,6 @@ Ask about LiveTape ("How does pausing an agent differ from stopping it?") or ask
 strategy ("Buy $100 of BTC when RSI(14) drops below 30 on 1-hour bars; close above 70"). The
 assistant returns strategy JSON; in LiveTape, open the strategy editor's **Source** tab,
 paste it, click **Import**, then **Save**. Backtest before you deploy.
-
-The validator checks a strategy before you import it (Node.js 18 or later):
-
-```
-node skills/livetape/scripts/validate-strategy.mjs strategy.json
-```
 
 ## Coming later
 
